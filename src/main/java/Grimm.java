@@ -1,24 +1,38 @@
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class Grimm {
-    private ArrayList<String> listArr = new ArrayList<String>(100);
+    private List<Tasks> tasksList;
 
-    public void add(String input) {
-        listArr.add(input);
+    public Grimm() {
+        this.tasksList = new ArrayList<>();
     }
 
-    public ArrayList<String> getList() {
-        return this.listArr;
+    public void add(Tasks input) {
+        this.tasksList.add(input);
     }
 
-    public void showList(ArrayList<String> tasks) {
-        if (tasks.isEmpty()) {
+    public void mark(int num) {
+        this.tasksList.get(num - 1).mark();
+    }
+
+    public void unmark(int num) {
+        this.tasksList.get(num - 1).unmark();
+    }
+
+    public String getTask(int num) {
+        return this.tasksList.get(num - 1).toString();
+    }
+
+    public void showTasks() {
+        if (this.tasksList == null) {
             System.out.println("No items in the list");
+            return;
         }
 
-        for (int i = 0; i < tasks.size(); i++) {
-            System.out.println(i + 1 + ". " + tasks.get(i));
+        for (int i = 0; i < this.tasksList.size(); i++) {
+            System.out.println(i + 1 + ". " + this.tasksList.get(i).toString());
         }
     }
 
@@ -27,16 +41,26 @@ public class Grimm {
         String logo = "Hello, I'm Grimm\nWhat can I do for you?\n";
         System.out.println(logo);
         Scanner scan = new Scanner(System.in);
-        String input = scan.nextLine();
-        while (!input.toLowerCase().equals("bye")) {
-            if (input.toLowerCase().equals("list")) {
-                grimm.showList(grimm.listArr);
+        Tasks input = new Tasks(scan.nextLine());
+        while (!input.getName().equals("bye")) {
+            if (input.getName().equals("list")) {
+                grimm.showTasks();
+            } else if (input.getName().contains("unmark")) {
+                String[] words = input.getName().split(" ");
+                int num = Integer.parseInt(words[1]);
+                grimm.unmark(num);
+                System.out.println("OK, I've marked this task as not done yet: \n" + grimm.getTask(num));
+            } else if (input.getName().contains("mark")) {
+                String[] words = input.getName().split(" ");
+                int num = Integer.parseInt(words[1]);
+                grimm.mark(num);
+                System.out.println("Nice! I've marked this task as done: \n" + grimm.getTask(num));
             } else {
                 grimm.add(input);
                 System.out.println("added: " + input);
             }
 
-            input = scan.nextLine();
+            input = new Tasks(scan.nextLine());
         }
 
         System.out.println("Bye. Hope to see you again soon!");
