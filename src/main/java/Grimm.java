@@ -11,14 +11,18 @@ public class Grimm {
 
     private void add(Tasks task) {
         this.tasksList.add(task);
+        System.out.println("Got it. I've added this task:\n" + task + "\nNow you have " + this.getSize() + " tasks in the list.");
+
     }
 
     private void mark(int num) {
         this.tasksList.get(num - 1).mark();
+        System.out.println("Nice! I've marked this task as done: \n" + this.getTask(num));
     }
 
     private void unmark(int num) {
         this.tasksList.get(num - 1).unmark();
+        System.out.println("OK, I've marked this task as not done yet: \n" + this.getTask(num));
     }
 
     private String getTask(int num) {
@@ -31,7 +35,7 @@ public class Grimm {
 
     private void showTasks() {
         if (this.tasksList.isEmpty()) {
-            System.out.println("No items in the list");
+            System.out.println("No acts for this stage yet. The troupe awaits your command.");
             return;
         }
 
@@ -51,6 +55,18 @@ public class Grimm {
         }
     }
 
+    private void validName(String input) throws GrimmException {
+        if (input.isEmpty()) {
+            throw new GrimmException("A task with no name? Try again with a description.");
+        }
+    }
+
+    private void validFormat(String[] input) throws GrimmException {
+        if (input.length < 2) {
+            throw new GrimmException("A deadline with no end? Try again with: deadline <desc> /by <time>.");
+        }
+    }
+
     public static void main(String[] args) {
         Grimm grimm = new Grimm();
         String logo = "Hello, I'm Grimm\nWhat can I do for you?\n";
@@ -58,8 +74,8 @@ public class Grimm {
         Scanner scan = new Scanner(System.in);
         while (true) {
             String input = scan.nextLine();
-            String[] words = input.toLowerCase().split(" ", 2);
-            String command = words[0];
+            String[] words = input.split(" ", 2);
+            String command = words[0].toLowerCase();
             String desc = "";
             if (words.length > 1) {
                 desc = words[1];
@@ -74,37 +90,62 @@ public class Grimm {
                     grimm.showTasks();
                 }
                 case "mark" -> {
-                    int num = Integer.parseInt(desc.trim());
-                    grimm.mark(num);
-                    System.out.println("Nice! I've marked this task as done: \n" + grimm.getTask(num));
+                    try {
+                        int num = Integer.parseInt(desc.trim());
+                        grimm.exceedIndex(num);
+                        grimm.mark(num);
+                    } catch (NumberFormatException e) {
+                        System.out.println("This is not a number I know. Try again.");
+                    } catch (GrimmException e) {
+                        System.out.println(e.getMessage());
+                    }
                 }
                 case "unmark" -> {
-                    int num = Integer.parseInt(desc.trim());
-                    grimm.unmark(num);
-                    System.out.println("OK, I've marked this task as not done yet: \n" + grimm.getTask(num));
+                    try {
+                        int num = Integer.parseInt(desc.trim());
+                        grimm.exceedIndex(num);
+                        grimm.unmark(num);
+                    } catch (NumberFormatException e) {
+                        System.out.println("This is not a number I know. Try again.");
+                    } catch (GrimmException e) {
+                        System.out.println(e.getMessage());
+                    }
                 }
                 case "todo" -> {
-                    ToDo todo = new ToDo(words[1]);
-                    grimm.add(todo);
-                    System.out.println("Got it. I've added this task:\n" + todo + "\nNow you have " + grimm.getSize() + " tasks in the list.");
-                }
+                    try {
+                        grimm.validName(desc);
+                        ToDo todo = new ToDo(desc);
+                        grimm.add(todo);
+                    } catch (GrimmException e) {
+                        System.out.println(e.getMessage());
+                    }                }
                 case "deadline" -> {
-                    String[] descParts = desc.split(" /by ", 2);
-                    Deadlines deadline = new Deadlines(descParts[0], descParts[1]);
-                    grimm.add(deadline);
-                    System.out.println("Got it. I've added this task:\n" + deadline + "\nNow you have " + grimm.getSize() + " tasks in the list.");
+                    try {
+                        grimm.validName(desc);
+                        String[] descParts = desc.split(" /by ", 2);
+                        grimm.validFormat(descParts);
+                        Deadlines deadline = new Deadlines(descParts[0], descParts[1]);
+                        grimm.add(deadline);
+                    } catch (GrimmException e) {
+                        System.out.println(e.getMessage());
+                    }
                 }
                 case "event" -> {
-                    String[] descParts = desc.split(" /from ", 2);
-                    String[] duration = descParts[1].split(" /to ", 2);
-                    Events event = new Events(descParts[0], duration[0], duration[1]);
-                    grimm.add(event);
-                    System.out.println("Got it. I've added this task:\n" + event + "\nNow you have " + grimm.getSize() + " tasks in the list.");
+                    try {
+                        grimm.validName(desc);
+                        String[] descParts = desc.split(" /from ", 2);
+                        grimm.validFormat(descParts);
+                        String[] duration = descParts[1].split(" /to ", 2);
+                        grimm.validFormat(duration);
+                        Events event = new Events(descParts[0], duration[0], duration[1]);
+                        grimm.add(event);
+                    } catch (GrimmException e) {
+                        System.out.println("An event cannot begin and end without a time? Try again with: event <desc> /from <start> /to <end>.");
+                    }
                 }
                 default -> {
-                    System.out.println("The stage is not prepared for such words, little one.");
+                    System.out.println("The stage is not prepared for such words, little one. Try a valid command.");
                 }
-
             }
         }
     }
