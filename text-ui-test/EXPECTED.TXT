@@ -1,19 +1,25 @@
 Hello, I'm Grimm
 What can I do for you?
 
+No acts for this stage yet. The troupe awaits your command.
+The stage is empty. Try again.
+The stage is empty. Try again.
+A task with no name? Try again with a description.
 Got it. I've added this task:
 [T][ ] borrow book
 Now you have 1 tasks in the list.
+A task with no name? Try again with a description.
+A deadline with no end? Try again with: deadline <desc> /by <time>.
 Got it. I've added this task:
 [D][ ] return book (by: Sunday)
 Now you have 2 tasks in the list.
+An event cannot begin and end without a time? Try again with: event <desc> /from <start> /to <end>.
+An event cannot begin and end without a time? Try again with: event <desc> /from <start> /to <end>.
+An event cannot begin and end without a time? Try again with: event <desc> /from <start> /to <end>.
 Got it. I've added this task:
 [E][ ] project meeting (from: Mon 2pm to: 4pm)
 Now you have 3 tasks in the list.
-Nice! I've marked this task as done: 
-[T][X] borrow book
-OK, I've marked this task as not done yet: 
-[T][ ] borrow book
+A deadline with no end? Try again with: deadline <desc> /by <time>.
 1. [T][ ] borrow book
 2. [D][ ] return book (by: Sunday)
 3. [E][ ] project meeting (from: Mon 2pm to: 4pm)
