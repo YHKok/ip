@@ -1,8 +1,16 @@
 list
+mark
+mark abcd
 mark 1
+unmark
+unmark abcd
 unmark 1
+delete
+delete abcd
+delete 1
 todo
 todo borrow book
+delete 1
 deadline
 deadline return book
 deadline return book /by Sunday
@@ -10,6 +18,5 @@ event
 event project meeting
 event project meeting /from Mon 2pm
 event project meeting /from Mon 2pm /to 4pm
-deadline return book
 list
 bye

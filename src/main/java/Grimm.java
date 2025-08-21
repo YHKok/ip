@@ -25,6 +25,13 @@ public class Grimm {
         System.out.println("OK, I've marked this task as not done yet: \n" + this.getTask(num));
     }
 
+    private void delete(int num) {
+        Tasks task = this.tasksList.get(num - 1);
+        this.tasksList.remove(num - 1);
+        System.out.println("Noted. I've removed this task:\n" + task + "\nNow you have " + this.getSize() + " tasks in the list.");
+
+    }
+
     private String getTask(int num) {
         return this.tasksList.get(num - 1).toString();
     }
@@ -141,6 +148,17 @@ public class Grimm {
                         grimm.add(event);
                     } catch (GrimmException e) {
                         System.out.println("An event cannot begin and end without a time? Try again with: event <desc> /from <start> /to <end>.");
+                    }
+                }
+                case "delete" -> {
+                    try {
+                        int num = Integer.parseInt(desc.trim());
+                        grimm.exceedIndex(num);
+                        grimm.delete(num);
+                    } catch (NumberFormatException e) {
+                        System.out.println("This is not a number I know. Try again.");
+                    } catch (GrimmException e) {
+                        System.out.println(e.getMessage());
                     }
                 }
                 default -> {
