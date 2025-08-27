@@ -1,0 +1,4 @@
+T,0,unlock Dream Nail
+D,0,release Troupe's flamesSept 6th
+T,0,join the troupe
+D,0,nurture grimmchildSept 10th
