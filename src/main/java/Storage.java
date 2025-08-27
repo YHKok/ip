@@ -61,11 +61,11 @@ public class Storage {
             }
             case "E" -> {
                 if (!dueBy.contains("-")) {
-                    throw new GrimmException("The Troupe senses a corrupted file.Try again with: E,<0/1>,<desc>,<date><time-time>");
+                    throw new GrimmException("The Troupe senses a corrupted file.Try again with: E,<0/1>,<desc>,<date>");
                 }
                 String[] dueByParts = dueBy.split("-");
                 if (dueByParts.length < 2) {
-                    throw new GrimmException("The Troupe senses a corrupted file.Try again with: E,<0/1>,<desc>,<date><time-time>");
+                    throw new GrimmException("The Troupe senses a corrupted file.Try again with: E,<0/1>,<desc>,<datetime-datetime>");
                 }
                 return new Event(desc, isMarked, dueByParts[0], dueByParts[1]);
             }

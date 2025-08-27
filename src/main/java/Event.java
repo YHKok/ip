@@ -1,3 +1,8 @@
+import java.time.DateTimeException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
+
 public class Event extends Task {
     private String startDate;
     private String endDate;
@@ -22,8 +27,20 @@ public class Event extends Task {
         return this.endDate;
     }
 
+    public String formatDateTime() {
+        try {
+            DateTimeFormatter format = DateTimeFormatter.ofPattern("MM/dd/yyyy HHmm");
+            LocalDateTime start = LocalDateTime.parse(this.startDate, format);
+            LocalDateTime end = LocalDateTime.parse(this.endDate, format);
+            DateTimeFormatter sgFormat = DateTimeFormatter.ofPattern("d MMMM yyyy, h:mm a").withLocale(Locale.forLanguageTag("en-SG"));
+            return start.format(sgFormat) + " to " + end.format(sgFormat);
+        } catch (DateTimeException e) {
+            return this.startDate + " to: " + this.endDate;
+        }
+    }
+
     @Override
     public String toString() {
-        return "[E]" + super.toString() + " (from: " + this.startDate + " to: " + this.endDate + ")";
+        return "[E]" + super.toString() + " (from: " + this.formatDateTime() + ")";
     }
 }
