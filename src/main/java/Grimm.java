@@ -1,8 +1,9 @@
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.time.DateTimeException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 public class Grimm {
     private final List<Task> taskList;
@@ -138,7 +139,7 @@ public class Grimm {
                         grimm.validName(desc);
                         ToDo todo = new ToDo(desc);
                         grimm.add(todo);
-                        System.out.println("Got it. I've added this task:\n" + todo.getName() + "\nNow you have " + grimm.getSize() + " tasks in the list.");
+                        System.out.println("Got it. I've added this task:\n" + todo+ "\nNow you have " + grimm.getSize() + " tasks in the list.");
                     } catch (GrimmException e) {
                         System.out.println(e.getMessage());
                     }                }
@@ -149,9 +150,11 @@ public class Grimm {
                         grimm.validFormat(descParts);
                         Deadline deadline = new Deadline(descParts[0], descParts[1]);
                         grimm.add(deadline);
-                        System.out.println("Got it. I've added this task:\n" + deadline.getName() + "\nNow you have " + grimm.getSize() + " tasks in the list.");
+                        System.out.println("Got it. I've added this task:\n" + deadline + "\nNow you have " + grimm.getSize() + " tasks in the list.");
                     } catch (GrimmException e) {
                         System.out.println(e.getMessage());
+                    } catch (DateTimeException e) {
+                        System.err.println("The Troupe does not understand this date. Try again with: MM/dd/yyyy format");
                     }
                 }
                 case "event" -> {
@@ -163,7 +166,7 @@ public class Grimm {
                         grimm.validFormat(duration);
                         Event event = new Event(descParts[0], duration[0], duration[1]);
                         grimm.add(event);
-                        System.out.println("Got it. I've added this task:\n" + event.getName() + "\nNow you have " + grimm.getSize() + " tasks in the list.");
+                        System.out.println("Got it. I've added this task:\n" + event + "\nNow you have " + grimm.getSize() + " tasks in the list.");
                     } catch (GrimmException e) {
                         System.out.println("An event cannot begin and end without a time. Try again with: event <desc> /from <start> /to <end>.");
                     }
