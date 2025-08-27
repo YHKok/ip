@@ -13,7 +13,7 @@ public class Storage {
         this.path = path;
     }
 
-    public List<Task> load() throws FileNotFoundException {
+    public List<Task> load() throws FileNotFoundException, GrimmException {
         File file = new File(this.path);
         List<Task> taskList = new ArrayList<>();
         Scanner scan = new Scanner(file);
@@ -27,8 +27,20 @@ public class Storage {
         return taskList;
     }
 
-    private Task addToList(String input) {
+    public void save(List<Task> tasks) throws IOException {
+        FileWriter writer = new FileWriter(this.path);
+        for (Task t : tasks) {
+            String input = saveToTxt(t);
+            writer.write(input + System.lineSeparator());
+        }
+        writer.close();
+    }
+
+    private Task addToList(String input) throws GrimmException {
         String[] data = input.split(",", 4);
+        if (data.length < 3) {
+            throw new GrimmException("The Troupe senses a corrupted file. Try again with: <T/D/E>,<0/1>,<desc>,<date><time>");
+        }
         String command = data[0].toUpperCase();
         boolean isMarked = data[1].equals("1");
         String desc = data[2];
@@ -42,27 +54,25 @@ public class Storage {
                 return new ToDo(desc, isMarked);
             }
             case "D" -> {
+                if (dueBy.isEmpty()) {
+                    throw new GrimmException("The Troupe senses a corrupted file.Try again with: D,<0/1>,<desc>,<date>");
+                }
                 return new Deadline(desc, isMarked, dueBy);
             }
             case "E" -> {
-                int split = dueBy.lastIndexOf("-");
-                String from = dueBy.substring(0, split);
-                String to = dueBy.substring(split + 1);
-                return new Event(desc, isMarked, from, to);
+                if (!dueBy.contains("-")) {
+                    throw new GrimmException("The Troupe senses a corrupted file.Try again with: E,<0/1>,<desc>,<date><time-time>");
+                }
+                String[] dueByParts = dueBy.split("-");
+                if (dueByParts.length < 2) {
+                    throw new GrimmException("The Troupe senses a corrupted file.Try again with: E,<0/1>,<desc>,<date><time-time>");
+                }
+                return new Event(desc, isMarked, dueByParts[0], dueByParts[1]);
             }
             default -> {
-                return null;
+                throw new GrimmException("The Troupe senses an unknown command.....");
             }
         }
-    }
-
-    public void save(List<Task> tasks) throws IOException {
-        FileWriter writer = new FileWriter(this.path);
-        for (Task t : tasks) {
-            String input = saveToTxt(t);
-            writer.write(input + System.lineSeparator());
-        }
-        writer.close();
     }
 
     private String saveToTxt(Task task) {
@@ -80,10 +90,10 @@ public class Storage {
             return command + "," + isMarked + "," + task.getName();
         } else if (task instanceof Deadline deadlines) {
             command = "D";
-            return command + "," + isMarked + "," + task.getName() + deadlines.getDueDate();
+            return command + "," + isMarked + "," + task.getName() + "," + deadlines.getDueDate();
         } else if (task instanceof Event events) {
             command = "E";
-            return command + "," + isMarked + "," + task.getName() + events.getStartDate() + "-" + events.getEndDate();
+            return command + "," + isMarked + "," + task.getName() + "," + events.getStartDate() + "-" + events.getEndDate();
         } else {
             return "";
         }

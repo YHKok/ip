@@ -83,6 +83,8 @@ public class Grimm {
             }
         } catch (FileNotFoundException e) {
             System.out.println("This is not a file I know. Try again.");
+        } catch (GrimmException e) {
+            System.out.println(e.getMessage());
         }
 
         String logo = "Hello, I'm Grimm\nWhat can I do for you?\n";
