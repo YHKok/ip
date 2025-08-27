@@ -1,60 +1,60 @@
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
 public class Grimm {
-    private final List<Tasks> tasksList;
+    private final List<Task> taskList;
 
-    public Grimm() {
-        this.tasksList = new ArrayList<>();
+    private Grimm() {
+        this.taskList = new ArrayList<>();
     }
 
-    private void add(Tasks task) {
-        this.tasksList.add(task);
-        System.out.println("Got it. I've added this task:\n" + task + "\nNow you have " + this.getSize() + " tasks in the list.");
-
+    private void add(Task task) {
+        this.taskList.add(task);
     }
 
     private void mark(int num) {
-        this.tasksList.get(num - 1).mark();
+        this.taskList.get(num - 1).mark();
         System.out.println("Nice! I've marked this task as done: \n" + this.getTask(num));
     }
 
     private void unmark(int num) {
-        this.tasksList.get(num - 1).unmark();
+        this.taskList.get(num - 1).unmark();
         System.out.println("OK, I've marked this task as not done yet: \n" + this.getTask(num));
     }
 
     private void delete(int num) {
-        Tasks task = this.tasksList.get(num - 1);
-        this.tasksList.remove(num - 1);
+        Task task = this.taskList.get(num - 1);
+        this.taskList.remove(num - 1);
         System.out.println("Noted. I've removed this task:\n" + task + "\nNow you have " + this.getSize() + " tasks in the list.");
 
     }
 
     private String getTask(int num) {
-        return this.tasksList.get(num - 1).toString();
+        return this.taskList.get(num - 1).toString();
     }
 
     private int getSize() {
-        return this.tasksList.size();
+        return this.taskList.size();
     }
 
     private void showTasks() {
-        if (this.tasksList.isEmpty()) {
+        if (this.taskList.isEmpty()) {
             System.out.println("No acts for this stage yet. The troupe awaits your command.");
             return;
         }
 
         int i = 1;
-        for (Tasks task : this.tasksList) {
+        for (Task task : this.taskList) {
             System.out.println(i + ". " + task);
             i++;
         }
     }
 
     private void exceedIndex(int num) throws GrimmException {
-        if (this.tasksList.isEmpty()) {
+        if (this.taskList.isEmpty()) {
             throw new GrimmException("The stage is empty. Try again.");
         }
         if (num < 1 || num > this.getSize()) {
@@ -76,6 +76,15 @@ public class Grimm {
 
     public static void main(String[] args) {
         Grimm grimm = new Grimm();
+        try {
+            Storage storage = new Storage("./data/grimm.txt");
+            for (Task t : storage.load()) {
+                grimm.add(t);
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println("This is not a file I know. Try again.");
+        }
+
         String logo = "Hello, I'm Grimm\nWhat can I do for you?\n";
         System.out.println(logo);
         Scanner scan = new Scanner(System.in);
@@ -90,12 +99,16 @@ public class Grimm {
 
             switch (command) {
                 case "bye" -> {
+                    try {
+                        Storage storage = new Storage("./data/grimm.txt");
+                        storage.save(grimm.taskList);
+                    } catch (IOException e) {
+                        System.out.println("This is not a file I know. Try again.");
+                    }
                     System.out.println("Bye. Hope to see you again soon!");
                     return;
                 }
-                case "list" -> {
-                    grimm.showTasks();
-                }
+                case "list" -> grimm.showTasks();
                 case "mark" -> {
                     try {
                         int num = Integer.parseInt(desc.trim());
@@ -123,6 +136,7 @@ public class Grimm {
                         grimm.validName(desc);
                         ToDo todo = new ToDo(desc);
                         grimm.add(todo);
+                        System.out.println("Got it. I've added this task:\n" + todo.getName() + "\nNow you have " + grimm.getSize() + " tasks in the list.");
                     } catch (GrimmException e) {
                         System.out.println(e.getMessage());
                     }                }
@@ -131,8 +145,9 @@ public class Grimm {
                         grimm.validName(desc);
                         String[] descParts = desc.split(" /by ", 2);
                         grimm.validFormat(descParts);
-                        Deadlines deadline = new Deadlines(descParts[0], descParts[1]);
+                        Deadline deadline = new Deadline(descParts[0], descParts[1]);
                         grimm.add(deadline);
+                        System.out.println("Got it. I've added this task:\n" + deadline.getName() + "\nNow you have " + grimm.getSize() + " tasks in the list.");
                     } catch (GrimmException e) {
                         System.out.println(e.getMessage());
                     }
@@ -144,10 +159,11 @@ public class Grimm {
                         grimm.validFormat(descParts);
                         String[] duration = descParts[1].split(" /to ", 2);
                         grimm.validFormat(duration);
-                        Events event = new Events(descParts[0], duration[0], duration[1]);
+                        Event event = new Event(descParts[0], duration[0], duration[1]);
                         grimm.add(event);
+                        System.out.println("Got it. I've added this task:\n" + event.getName() + "\nNow you have " + grimm.getSize() + " tasks in the list.");
                     } catch (GrimmException e) {
-                        System.out.println("An event cannot begin and end without a time? Try again with: event <desc> /from <start> /to <end>.");
+                        System.out.println("An event cannot begin and end without a time. Try again with: event <desc> /from <start> /to <end>.");
                     }
                 }
                 case "delete" -> {
@@ -161,9 +177,7 @@ public class Grimm {
                         System.out.println(e.getMessage());
                     }
                 }
-                default -> {
-                    System.out.println("The stage is not prepared for such words, little one. Try a valid command.");
-                }
+                default -> System.out.println("The stage is not prepared for such words, little one. Try a valid command.");
             }
         }
     }
