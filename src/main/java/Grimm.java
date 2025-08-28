@@ -5,9 +5,11 @@ import java.util.*;
 
 public class Grimm {
     private final TaskList taskList;
+    private final Ui ui;
 
     private Grimm() {
         this.taskList = new TaskList();
+        this.ui = new Ui();
     }
 
     private void validName(String input) throws GrimmException {
@@ -30,13 +32,12 @@ public class Grimm {
                 grimm.taskList.add(t);
             }
         } catch (FileNotFoundException e) {
-            System.out.println("This is not a file I know. Try again.");
+            grimm.ui.invalidFile();
         } catch (GrimmException e) {
-            System.out.println(e.getMessage());
+            grimm.ui.invalidGrimmMsg(e.getMessage());
         }
 
-        String logo = "Hello, I'm Grimm\nWhat can I do for you?\n";
-        System.out.println(logo);
+        grimm.ui.welcome();
         Scanner scan = new Scanner(System.in);
         while (true) {
             String input = scan.nextLine();
@@ -53,32 +54,36 @@ public class Grimm {
                         Storage storage = new Storage("./data/grimm.txt");
                         storage.save(grimm.taskList.getTaskList());
                     } catch (IOException e) {
-                        System.out.println("This is not a file I know. Try again.");
+                        grimm.ui.invalidFile();
+                    } finally {
+                        grimm.ui.bye();
                     }
-                    System.out.println("Bye. Hope to see you again soon!");
+
                     return;
                 }
-                case "list" -> grimm.taskList.showTasks();
+                case "list" -> grimm.ui.showTasks(grimm.taskList.getTaskList());
                 case "mark" -> {
                     try {
                         int num = Integer.parseInt(desc.trim());
                         grimm.taskList.exceedIndex(num);
-                        grimm.taskList.mark(num);
+                        Task task = grimm.taskList.mark(num);
+                        grimm.ui.markMsg(task);
                     } catch (NumberFormatException e) {
-                        System.out.println("This is not a number I know. Try again.");
+                        grimm.ui.invalidNumber();
                     } catch (GrimmException e) {
-                        System.out.println(e.getMessage());
+                        grimm.ui.invalidGrimmMsg(e.getMessage());
                     }
                 }
                 case "unmark" -> {
                     try {
                         int num = Integer.parseInt(desc.trim());
                         grimm.taskList.exceedIndex(num);
-                        grimm.taskList.unmark(num);
+                        Task task = grimm.taskList.unmark(num);
+                        grimm.ui.unmarkMsg(task);
                     } catch (NumberFormatException e) {
-                        System.out.println("This is not a number I know. Try again.");
+                        grimm.ui.invalidNumber();
                     } catch (GrimmException e) {
-                        System.out.println(e.getMessage());
+                        grimm.ui.invalidGrimmMsg(e.getMessage());
                     }
                 }
                 case "todo" -> {
@@ -86,9 +91,12 @@ public class Grimm {
                         grimm.validName(desc);
                         ToDo todo = new ToDo(desc);
                         grimm.taskList.add(todo);
+                        grimm.ui.addMsg(todo, grimm.taskList.getSize());
                     } catch (GrimmException e) {
-                        System.out.println(e.getMessage());
-                    }                }
+                        grimm.ui.invalidGrimmMsg(e.getMessage());
+                    }
+                }
+
                 case "deadline" -> {
                     try {
                         grimm.validName(desc);
@@ -96,11 +104,11 @@ public class Grimm {
                         grimm.validFormat(descParts);
                         Deadline deadline = new Deadline(descParts[0], descParts[1]);
                         grimm.taskList.add(deadline);
-                        System.out.println("Got it. I've added this task:\n" + deadline + "\nNow you have " + grimm.taskList.getSize() + " tasks in the list.");
+                        grimm.ui.addMsg(deadline, grimm.taskList.getSize());
                     } catch (GrimmException e) {
-                        System.out.println(e.getMessage());
+                        grimm.ui.invalidDeadline();
                     } catch (DateTimeException e) {
-                        System.err.println("The Troupe does not understand this date. Try again with: MM/dd/yyyy format");
+                        grimm.ui.invalidDate();
                     }
                 }
                 case "event" -> {
@@ -112,23 +120,26 @@ public class Grimm {
                         grimm.validFormat(duration);
                         Event event = new Event(descParts[0], duration[0], duration[1]);
                         grimm.taskList.add(event);
-                        System.out.println("Got it. I've added this task:\n" + event + "\nNow you have " + grimm.taskList.getSize() + " tasks in the list.");
+                        grimm.ui.addMsg(event, grimm.taskList.getSize());
                     } catch (GrimmException e) {
-                        System.out.println("An event cannot begin and end without a time. Try again with: event <desc> /from <start> /to <end>.");
+                        grimm.ui.invalidEvent();
+                    } catch (DateTimeException e) {
+                        grimm.ui.invalidDatetime();
                     }
                 }
                 case "delete" -> {
                     try {
                         int num = Integer.parseInt(desc.trim());
                         grimm.taskList.exceedIndex(num);
-                        grimm.taskList.delete(num);
+                        Task task = grimm.taskList.delete(num);
+                        grimm.ui.deleteMsg(task, num);
                     } catch (NumberFormatException e) {
-                        System.out.println("This is not a number I know. Try again.");
+                        grimm.ui.invalidNumber();
                     } catch (GrimmException e) {
-                        System.out.println(e.getMessage());
+                        grimm.ui.invalidGrimmMsg(e.getMessage());
                     }
                 }
-                default -> System.out.println("The stage is not prepared for such words, little one. Try a valid command.");
+                default -> grimm.ui.unknownCommand();
             }
         }
     }
