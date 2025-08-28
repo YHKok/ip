@@ -3,6 +3,7 @@ import java.util.List;
 
 public class TaskList {
     private final List<Task> taskList = new ArrayList<>();
+    private Task task;
 
     public int getSize() {
         return this.taskList.size();
@@ -18,37 +19,24 @@ public class TaskList {
 
     public void add(Task task) {
         this.taskList.add(task);
-        System.out.println("Got it. I've added this task:\n" + task + "\nNow you have " + this.getSize() + " tasks in the list.");
     }
 
-    public void mark(int num) {
-        this.taskList.get(num - 1).mark();
-        System.out.println("Nice! I've marked this task as done: \n" + this.getTask(num));
+    public Task mark(int num) {
+        this.task = this.getTask(num);
+        this.task.mark();
+        return this.task;
     }
 
-    public void unmark(int num) {
-        this.taskList.get(num - 1).unmark();
-        System.out.println("OK, I've marked this task as not done yet: \n" + this.getTask(num));
+    public Task unmark(int num) {
+        this.task = this.getTask(num);
+        this.task.unmark();
+        return this.task;
     }
 
-    public void delete(int num) {
-        Task task = this.taskList.get(num - 1);
+    public Task delete(int num) {
+        this.task = this.getTask(num);
         this.taskList.remove(num - 1);
-        System.out.println("Noted. I've removed this task:\n" + task + "\nNow you have " + this.getSize() + " tasks in the list.");
-
-    }
-
-    public void showTasks() {
-        if (this.taskList.isEmpty()) {
-            System.out.println("No acts for this stage yet. The troupe awaits your command.");
-            return;
-        }
-
-        int i = 1;
-        for (Task task : this.taskList) {
-            System.out.println(i + ". " + task);
-            i++;
-        }
+        return this.task;
     }
 
     public void exceedIndex(int num) throws GrimmException {
