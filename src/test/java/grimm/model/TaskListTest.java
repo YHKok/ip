@@ -1,6 +1,5 @@
 package grimm.model;
 
-import grimm.exception.GrimmException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -18,7 +17,7 @@ class TaskListTest {
     }
 
     @Test
-    public void taskList_get() {
+    public void taskList_addTasks_retrieveCorrectTask() {
         assertEquals(0, list.getSize());
 
         Task t1 = new Task("read book");
@@ -33,7 +32,7 @@ class TaskListTest {
     }
 
     @Test
-    public void taskList_returnsMarkedTask() {
+    public void taskList_markTask_taskMarkedAsDone() {
         Task t = new Task("defeat Grimm");
         list.add(t);
 
@@ -44,7 +43,7 @@ class TaskListTest {
     }
 
     @Test
-    public void taskList_returnsUnmarkedTask() {
+    public void taskList_unmarkTask_taskUnmarked() {
         Task t = new Task("defeat Grimm", true);
         list.add(t);
 
@@ -55,9 +54,9 @@ class TaskListTest {
     }
 
     @Test
-    public void taskList_deleteTask() {
-        Task t1 = new Task("a");
-        Task t2 = new Task("b");
+    public void taskList_deleteTask_taskRemovedFromList() {
+        Task t1 = new Task("defeat Grimm");
+        Task t2 = new Task("defeat NKG");
         list.add(t1);
         list.add(t2);
 
