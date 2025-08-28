@@ -33,8 +33,7 @@ application {
 }
 
 shadowJar {
-    archiveBaseName = "grimm"
-    archiveClassifier = null
+    archiveBaseName = "grimm.jar"
 }
 
 run{
