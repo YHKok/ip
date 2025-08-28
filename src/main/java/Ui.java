@@ -11,7 +11,7 @@ public class Ui {
     }
 
     public void listEmptyMsg() {
-        System.out.println("No acts for this stage yet. The troupe awaits your command.");
+        System.err.println("No acts for this stage yet. The troupe awaits your command.");
     }
 
     public void addMsg(Task task, int size) {
@@ -26,16 +26,12 @@ public class Ui {
         System.out.println("OK, I've marked this task as not done yet: \n" + task);
     }
 
-    public void deleteMsg(Task task, int size) {
-        System.out.println("Noted. I've removed this task:\n" + task + "\nNow you have " + size + " tasks in the list.");
+    public void deleteMsg(Task task, TaskList taskList) {
+        System.out.println("Noted. I've removed this task:\n" + task + "\nNow you have " + taskList.getSize() + " tasks in the list.");
     }
 
     public void invalidFile() {
-        System.out.println("This is not a file I know. Try again.");
-    }
-
-    public void invalidNumber() {
-        System.out.println("This is not a number I know. Try again.");
+        System.err.println("This is not a file I know. Try again.");
     }
 
     public void invalidDate() {
@@ -59,7 +55,7 @@ public class Ui {
     }
 
     public void invalidGrimmMsg(String msg) {
-        System.out.println(msg);
+        System.err.println(msg);
     }
 
     public void showTasks(List<Task> tasks) {
