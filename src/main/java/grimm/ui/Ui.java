@@ -5,6 +5,14 @@ import grimm.model.TaskList;
 
 import java.util.List;
 
+/**
+ * Handles all the user interface outputs for the Grimm task management application.
+ * <p>
+ * The Ui class is responsible for displaying various messages to the user based on
+ * user actions or errors. It handles messages related to tasks, errors, and application
+ * flow such as marking/unmarking tasks, listing tasks, and responding to invalid commands.
+ * </p>
+ */
 public class Ui {
 
     public void welcome() {
@@ -63,6 +71,14 @@ public class Ui {
         System.err.println(msg);
     }
 
+    /**
+     * Prints the list of tasks to the user.
+     * <p>
+     * If the task list is empty, it calls the listEmptyMsg() method to notify the user.
+     * </p>
+     *
+     * @param tasks The list of tasks to be displayed.
+     */
     public void showTasks(List<Task> tasks) {
         if (tasks.isEmpty()) {
             this.listEmptyMsg();
