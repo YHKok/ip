@@ -1,10 +1,16 @@
 package grimm.model;
 
 import grimm.exception.GrimmException;
-
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Represents a list of tasks.
+ * <p>
+ * The TaskList class manages a collection of tasks and provides functionality
+ * for adding, marking, unmarking, deleting tasks, and checking for out-of-bounds indices.
+ * </p>
+ */
 public class TaskList {
     private final List<Task> taskList = new ArrayList<>();
     private Task task;
@@ -21,28 +27,60 @@ public class TaskList {
         return this.taskList;
     }
 
+    /**
+     * Adds a task to the task list.
+     *
+     * @param task The task to be added.
+     */
     public void add(Task task) {
         this.taskList.add(task);
     }
 
+    /**
+     * Marks a task as done based on the specified index (1-based).
+     *
+     * @param num The index of the task to mark (1-based).
+     * @return The marked task.
+     * @throws GrimmException if the index is out of bounds.
+     */
     public Task mark(int num) {
         this.task = this.getTask(num);
         this.task.mark();
         return this.task;
     }
 
+    /**
+     * Unmarks a task, setting it to the incomplete state, based on the specified index (1-based).
+     *
+     * @param num The index of the task to unmark (1-based).
+     * @return The unmarked task.
+     * @throws GrimmException if the index is out of bounds.
+     */
     public Task unmark(int num) {
         this.task = this.getTask(num);
         this.task.unmark();
         return this.task;
     }
 
+    /**
+     * Deletes a task based on the specified index (1-based).
+     *
+     * @param num The index of the task to delete (1-based).
+     * @return The deleted task.
+     * @throws GrimmException if the index is out of bounds.
+     */
     public Task delete(int num) {
         this.task = this.getTask(num);
         this.taskList.remove(num - 1);
         return this.task;
     }
 
+    /**
+     * Validates if the provided index is within the valid range of the task list.
+     *
+     * @param num The index to validate (1-based).
+     * @throws GrimmException if the index is invalid (either less than 1 or greater than the list size).
+     */
     public void exceedIndex(int num) throws GrimmException {
         if (this.taskList.isEmpty()) {
             throw new GrimmException("The stage is empty. Try again.");
