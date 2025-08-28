@@ -6,6 +6,9 @@ import java.util.Locale;
 public class Event extends Task {
     private String startDate;
     private String endDate;
+    private static final DateTimeFormatter INPUT_FORMAT = DateTimeFormatter.ofPattern("MM/dd/yyyy HHmm");
+    private static final DateTimeFormatter OUTPUT_FORMAT = DateTimeFormatter.ofPattern("d MMMM yyyy, h:mm a").withLocale(Locale.forLanguageTag("en-SG"));
+
 
     public Event(String name, String startDate, String endDate) {
         super(name);
@@ -29,11 +32,10 @@ public class Event extends Task {
 
     public String formatDateTime() {
         try {
-            DateTimeFormatter format = DateTimeFormatter.ofPattern("MM/dd/yyyy HHmm");
-            LocalDateTime start = LocalDateTime.parse(this.startDate, format);
-            LocalDateTime end = LocalDateTime.parse(this.endDate, format);
-            DateTimeFormatter sgFormat = DateTimeFormatter.ofPattern("d MMMM yyyy, h:mm a").withLocale(Locale.forLanguageTag("en-SG"));
-            return start.format(sgFormat) + " to " + end.format(sgFormat);
+
+            LocalDateTime start = LocalDateTime.parse(this.startDate, INPUT_FORMAT);
+            LocalDateTime end = LocalDateTime.parse(this.endDate, INPUT_FORMAT);
+            return start.format(OUTPUT_FORMAT) + " to " + end.format(OUTPUT_FORMAT);
         } catch (DateTimeException e) {
             return this.startDate + " to: " + this.endDate;
         }
