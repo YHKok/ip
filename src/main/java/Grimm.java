@@ -6,22 +6,12 @@ import java.util.*;
 public class Grimm {
     private final TaskList taskList;
     private final Ui ui;
+    private final Parser parser;
 
     private Grimm() {
         this.taskList = new TaskList();
         this.ui = new Ui();
-    }
-
-    private void validName(String input) throws GrimmException {
-        if (input.isEmpty()) {
-            throw new GrimmException("A task with no name? Try again with a description.");
-        }
-    }
-
-    private void validFormat(String[] input) throws GrimmException {
-        if (input.length < 2) {
-            throw new GrimmException("A deadline with no end? Try again with: deadline <desc> /by <time>.");
-        }
+        this.parser = new Parser();
     }
 
     public static void main(String[] args) {
@@ -41,15 +31,12 @@ public class Grimm {
         Scanner scan = new Scanner(System.in);
         while (true) {
             String input = scan.nextLine();
-            String[] words = input.split(" ", 2);
-            String command = words[0].toLowerCase();
-            String desc = "";
-            if (words.length > 1) {
-                desc = words[1];
-            }
+            Parser parser = grimm.parser.parse(input);
+            String command = parser.getCommand().getCommand();
+            String desc = parser.getDesc();
 
             switch (command) {
-                case "bye" -> {
+                case Command.BYE -> {
                     try {
                         Storage storage = new Storage("./data/grimm.txt");
                         storage.save(grimm.taskList.getTaskList());
@@ -61,34 +48,30 @@ public class Grimm {
 
                     return;
                 }
-                case "list" -> grimm.ui.showTasks(grimm.taskList.getTaskList());
-                case "mark" -> {
+                case Command.LIST -> grimm.ui.showTasks(grimm.taskList.getTaskList());
+                case Command.MARK -> {
                     try {
-                        int num = Integer.parseInt(desc.trim());
+                        int num = parser.parseInt();
                         grimm.taskList.exceedIndex(num);
                         Task task = grimm.taskList.mark(num);
                         grimm.ui.markMsg(task);
-                    } catch (NumberFormatException e) {
-                        grimm.ui.invalidNumber();
                     } catch (GrimmException e) {
                         grimm.ui.invalidGrimmMsg(e.getMessage());
                     }
                 }
-                case "unmark" -> {
+                case Command.UNMARK -> {
                     try {
-                        int num = Integer.parseInt(desc.trim());
+                        int num = parser.parseInt();
                         grimm.taskList.exceedIndex(num);
                         Task task = grimm.taskList.unmark(num);
                         grimm.ui.unmarkMsg(task);
-                    } catch (NumberFormatException e) {
-                        grimm.ui.invalidNumber();
                     } catch (GrimmException e) {
                         grimm.ui.invalidGrimmMsg(e.getMessage());
                     }
                 }
-                case "todo" -> {
+                case Command.TODO -> {
                     try {
-                        grimm.validName(desc);
+                        parser.validName();
                         ToDo todo = new ToDo(desc);
                         grimm.taskList.add(todo);
                         grimm.ui.addMsg(todo, grimm.taskList.getSize());
@@ -97,11 +80,9 @@ public class Grimm {
                     }
                 }
 
-                case "deadline" -> {
+                case Command.DEADLINE -> {
                     try {
-                        grimm.validName(desc);
-                        String[] descParts = desc.split(" /by ", 2);
-                        grimm.validFormat(descParts);
+                        String[] descParts = parser.parseDeadline();
                         Deadline deadline = new Deadline(descParts[0], descParts[1]);
                         grimm.taskList.add(deadline);
                         grimm.ui.addMsg(deadline, grimm.taskList.getSize());
@@ -111,14 +92,10 @@ public class Grimm {
                         grimm.ui.invalidDate();
                     }
                 }
-                case "event" -> {
+                case Command.EVENT -> {
                     try {
-                        grimm.validName(desc);
-                        String[] descParts = desc.split(" /from ", 2);
-                        grimm.validFormat(descParts);
-                        String[] duration = descParts[1].split(" /to ", 2);
-                        grimm.validFormat(duration);
-                        Event event = new Event(descParts[0], duration[0], duration[1]);
+                        String[] descParts = parser.parseEvent();
+                        Event event = new Event(descParts[0], descParts[1], descParts[2]);
                         grimm.taskList.add(event);
                         grimm.ui.addMsg(event, grimm.taskList.getSize());
                     } catch (GrimmException e) {
@@ -127,14 +104,12 @@ public class Grimm {
                         grimm.ui.invalidDatetime();
                     }
                 }
-                case "delete" -> {
+                case Command.DELETE -> {
                     try {
-                        int num = Integer.parseInt(desc.trim());
+                        int num = parser.parseInt();
                         grimm.taskList.exceedIndex(num);
                         Task task = grimm.taskList.delete(num);
-                        grimm.ui.deleteMsg(task, num);
-                    } catch (NumberFormatException e) {
-                        grimm.ui.invalidNumber();
+                        grimm.ui.deleteMsg(task, grimm.taskList);
                     } catch (GrimmException e) {
                         grimm.ui.invalidGrimmMsg(e.getMessage());
                     }
