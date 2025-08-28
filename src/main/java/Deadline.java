@@ -5,6 +5,10 @@ import java.util.Locale;
 
 public class Deadline extends Task {
     private String dueDate;
+    private static final DateTimeFormatter INPUT_FORMAT = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+    private static final DateTimeFormatter OUTPUT_FORMAT = DateTimeFormatter.ofPattern("d MMMM yyyy", Locale.forLanguageTag("en-SG"));
+
+
 
     public Deadline(String name, String dueDate) {
         super(name);
@@ -22,10 +26,8 @@ public class Deadline extends Task {
 
     public String formatDate() {
         try {
-            DateTimeFormatter format = DateTimeFormatter.ofPattern("MM/dd/yyyy");
-            LocalDate localDate = LocalDate.parse(this.dueDate, format);
-            DateTimeFormatter sgFormat = DateTimeFormatter.ofPattern("d MMMM yyyy", Locale.forLanguageTag("en-SG"));
-            return localDate.format(sgFormat);
+            LocalDate localDate = LocalDate.parse(this.dueDate, INPUT_FORMAT);
+            return localDate.format(OUTPUT_FORMAT);
         } catch (DateTimeException e) {
             return this.dueDate;
         }
