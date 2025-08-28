@@ -14,13 +14,37 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+/**
+ * Handles reading and writing tasks from and to a file.
+ * <p>
+ * The Storage class provides methods to load tasks from a file, save tasks to a file,
+ * and process tasks to/from their respective string representations.
+ * It handles various types of tasks, including ToDo, Deadline, and Event.
+ * </p>
+ */
 public class Storage {
     private String path;
 
+    /**
+     * Constructs a Storage object with the specified file path.
+     *
+     * @param path The path to the file where tasks will be stored or loaded from.
+     */
     public Storage(String path) {
         this.path = path;
     }
 
+    /**
+     * Loads tasks from the file specified by the path.
+     * <p>
+     * This method reads each line from the file, parses the task information,
+     * and returns a list of Task objects.
+     * </p>
+     *
+     * @return A list of Task objects loaded from the file.
+     * @throws FileNotFoundException if the file is not found.
+     * @throws GrimmException if the file format is invalid or corrupted.
+     */
     public List<Task> load() throws FileNotFoundException, GrimmException {
         File file = new File(this.path);
         List<Task> taskList = new ArrayList<>();
@@ -35,6 +59,15 @@ public class Storage {
         return taskList;
     }
 
+    /**
+     * Saves a list of tasks to the file specified by the path.
+     * <p>
+     * This method writes the tasks to the file in a format that can be reloaded later.
+     * </p>
+     *
+     * @param tasks The list of tasks to save.
+     * @throws IOException if an I/O error occurs while writing to the file.
+     */
     public void save(List<Task> tasks) throws IOException {
         FileWriter writer = new FileWriter(this.path);
         for (Task t : tasks) {
@@ -44,6 +77,17 @@ public class Storage {
         writer.close();
     }
 
+    /**
+     * Processes a task string and converts it to a corresponding Task object.
+     * <p>
+     * This method interprets the data from the file and constructs a task based on
+     * whether it is a ToDo, Deadline, or Event.
+     * </p>
+     *
+     * @param input The task data string to be converted into a Task object.
+     * @return A Task object created from the input string.
+     * @throws GrimmException if the input format is invalid or corrupted.
+     */
     private Task addToList(String input) throws GrimmException {
         String[] data = input.split(",", 4);
         if (data.length < 3) {
@@ -83,6 +127,16 @@ public class Storage {
         }
     }
 
+    /**
+     * Converts a Task object to its corresponding string representation for saving to a file.
+     * <p>
+     * This method returns a string that represents the task, including its type, mark status,
+     * name, and any additional details like due date or event timing.
+     * </p>
+     *
+     * @param task The Task object to be saved to the file.
+     * @return A string representation of the task.
+     */
     private String saveToTxt(Task task) {
         if (task == null) {
             return "";
