@@ -2,12 +2,31 @@ package grimm.parse;
 
 import grimm.exception.GrimmException;
 
+/**
+ * Parses and validates user input commands for the Grimm task management system.
+ * <p>
+ * The Parser class is responsible for interpreting user commands, validating the task descriptions,
+ * and ensuring that the input follows the correct format.
+ * Provides utility methods to process specific task types.
+ * </p>
+ */
 public class Parser {
     private Command command;
     private String desc;
 
+
+    /**
+     * Default constructor for Parser.
+     * Initializes an empty parser with no command and description.
+     */
     public Parser() {}
 
+    /**
+     * Constructs a Parser with a given command and description.
+     *
+     * @param command The command to be parsed (e.g., "todo", "deadline").
+     * @param desc    The description for the task associated with the command.
+     */
     public Parser(Command command, String desc) {
         this.command = command;
         if (desc == null) {
@@ -24,9 +43,20 @@ public class Parser {
         return this.desc;
     }
 
+    /**
+     * Parses the user input into a Command and its description.
+     * <p>
+     * Splits the input into the command and the description. The command is validated and converted
+     * into a Command object. If the input is empty, an "UNKNOWN" command is created.
+     * </p>
+     *
+     * @param input The user input to parse.
+     * @return A new Parser object with the parsed command and description.
+     * @throws GrimmException if the input is invalid or empty.
+     */
     public Parser parse(String input) {
         if (input == null || input.isEmpty()) {
-            return new Parser(new Command(Command.UNKNOWN), "");
+            return new Parser(Command.UNKNOWN, "");
         }
         String[] words = input.split(" ", 2);
         String command = words[0].toLowerCase();
@@ -35,27 +65,56 @@ public class Parser {
             desc = words[1];
         }
 
-        return new Parser(new Command(command), desc);
+        return new Parser(Command.convert(command), desc);
     }
 
+    /**
+     * Validates that the task description is not empty.
+     *
+     * @throws GrimmException if the task description is empty.
+     */
     public void validName() throws GrimmException {
         if (this.desc.isEmpty()) {
             throw new GrimmException("A task with no name? Try again with a description.");
         }
     }
 
+    /**
+     * Validates the format for a deadline command.
+     * <p>
+     * Ensures that the description includes both the task and the due date.
+     * </p>
+     *
+     * @param input The input array containing the description and due date.
+     * @throws GrimmException if the format is invalid.
+     */
     public void validDeadlineFormat(String[] input) throws GrimmException {
         if (input.length < 2) {
             throw new GrimmException("A deadline with no end? Try again with: deadline <desc> /by <time>.");
         }
     }
 
+    /**
+     * Validates the format for an event command.
+     * <p>
+     * Ensures that the description includes both the event details and the start and end times.
+     * </p>
+     *
+     * @param input The input array containing the event details and timings.
+     * @throws GrimmException if the format is invalid.
+     */
     public void validEventFormat(String[] input) throws GrimmException {
         if (input.length < 2) {
             throw new GrimmException("An event with no start and end? Try again with: event <desc> /from <time> /to <time>.");
         }
     }
 
+    /**
+     * Attempts to parse the description as an integer.
+     *
+     * @return The integer parsed from the description.
+     * @throws GrimmException if the description cannot be parsed as an integer.
+     */
     public int parseInt() throws GrimmException {
         try {
             return Integer.parseInt(this.desc);
@@ -64,6 +123,12 @@ public class Parser {
         }
     }
 
+    /**
+     * Parses the deadline description and returns the description and due date.
+     *
+     * @return A string array containing the task description and due date.
+     * @throws GrimmException if the format is invalid.
+     */
     public String[] parseDeadline() throws GrimmException {
         this.validName();
         String[] descParts = this.desc.split(" /by ", 2);
@@ -71,6 +136,12 @@ public class Parser {
         return new String[] {descParts[0], descParts[1]};
     }
 
+    /**
+     * Parses the event description and returns the description, start date, and end date.
+     *
+     * @return A string array containing the event description, start time, and end time.
+     * @throws GrimmException if the format is invalid.
+     */
     public String[] parseEvent() throws GrimmException {
         this.validName();
         String[] descParts = this.desc.split(" /from ", 2);
