@@ -6,6 +6,7 @@ plugins {
 
 repositories {
     mavenCentral()
+    maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
 }
 
 dependencies {
@@ -28,11 +29,11 @@ test {
 }
 
 application {
-    mainClass.set("seedu.duke.Duke")
+    mainClass.set("grimm.app.Grimm")
 }
 
 shadowJar {
-    archiveBaseName = "duke"
+    archiveBaseName = "grimm"
     archiveClassifier = null
 }
 
