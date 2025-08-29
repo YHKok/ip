@@ -17,8 +17,8 @@ import java.util.Scanner;
 /**
  * Handles reading and writing tasks from and to a file.
  * <p>
- * The Storage class provides methods to load tasks from a file, save tasks to a file,
- * and process tasks to/from their respective string representations.
+ * The Storage class provides methods to load tasks from a file and save tasks to a file.
+ * Process tasks to and from their respective string representations.
  * It handles various types of tasks, including ToDo, Deadline, and Event.
  * </p>
  */
@@ -37,8 +37,8 @@ public class Storage {
     /**
      * Loads tasks from the file specified by the path.
      * <p>
-     * This method reads each line from the file, parses the task information,
-     * and returns a list of Task objects.
+     * This method reads each line from the file and parses the task information.
+     * Returns a list of Task objects.
      * </p>
      *
      * @return A list of Task objects loaded from the file.
@@ -102,36 +102,36 @@ public class Storage {
         }
 
         switch (command) {
-            case "T" -> {
-                return new ToDo(desc, isMarked);
-            }
-            case "D" -> {
-                if (dueBy.isEmpty()) {
-                    throw new GrimmException("The Troupe senses a corrupted file.Try again with: D,<0/1>,<desc>,<date>");
-                }
-                return new Deadline(desc, isMarked, dueBy);
-            }
-            case "E" -> {
-                if (!dueBy.contains("-")) {
-                    throw new GrimmException("The Troupe senses a corrupted file.Try again with: E,<0/1>,<desc>,<date>");
-                }
-                String[] dueByParts = dueBy.split("-");
-                if (dueByParts.length < 2) {
-                    throw new GrimmException("The Troupe senses a corrupted file.Try again with: E,<0/1>,<desc>,<datetime-datetime>");
-                }
-                return new Event(desc, isMarked, dueByParts[0], dueByParts[1]);
-            }
-            default -> {
-                throw new GrimmException("The Troupe senses an unknown command.....");
-            }
+        case "T" -> {
+            return new ToDo(desc, isMarked);
         }
+        case "D" -> {
+            if (dueBy.isEmpty()) {
+                throw new GrimmException("The Troupe senses a corrupted file.Try again with: D,<0/1>,<desc>,<date>");
+            }
+            return new Deadline(desc, isMarked, dueBy);
+        }
+        case "E" -> {
+            if (!dueBy.contains("-")) {
+                throw new GrimmException("The Troupe senses a corrupted file.Try again with: E,<0/1>,<desc>,<date>");
+            }
+            String[] dueByParts = dueBy.split("-");
+            if (dueByParts.length < 2) {
+                throw new GrimmException("The Troupe senses a corrupted file.Try again with: E,<0/1>,<desc>,<datetime-datetime>");
+            }
+            return new Event(desc, isMarked, dueByParts[0], dueByParts[1]);
+        }
+        default -> {
+            throw new GrimmException("The Troupe senses an unknown command.....");
+        }
+    }
     }
 
     /**
      * Converts a Task object to its corresponding string representation for saving to a file.
      * <p>
      * This method returns a string that represents the task, including its type, mark status,
-     * name, and any additional details like due date or event timing.
+     * name, and other details due date or event timing.
      * </p>
      *
      * @param task The Task object to be saved to the file.
