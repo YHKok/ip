@@ -14,7 +14,7 @@ public class Task {
     /**
      * Constructs a Task with a given description.
      * <p>
-     * The task will initially be unmarked.
+     * The task will be unmarked.
      * </p>
      *
      * @param name The description of the task.
@@ -30,11 +30,11 @@ public class Task {
      * </p>
      *
      * @param name The description of the task.
-     * @param mark The initial mark status of the task (true for marked, false for unmarked).
+     * @param isMarked The initial mark status of the task (true for marked, false for unmarked).
      */
-    public Task(String name, boolean mark) {
+    public Task(String name, boolean isMarked) {
         this.name = name;
-        if (mark) {
+        if (isMarked) {
             this.mark();
         }
     }
