@@ -24,7 +24,7 @@ public class Parser {
     /**
      * Constructs a Parser with a given command and description.
      *
-     * @param command The command to be parsed (e.g., "todo", "deadline").
+     * @param command The command to be parsed.
      * @param desc    The description for the task associated with the command.
      */
     public Parser(Command command, String desc) {
