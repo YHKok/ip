@@ -18,6 +18,7 @@ public enum Command {
     DEADLINE("deadline"),
     EVENT("event"),
     DELETE("delete"),
+    FIND("find"),
     UNKNOWN("");
     private String command;
 
