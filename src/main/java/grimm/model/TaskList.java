@@ -90,4 +90,15 @@ public class TaskList {
         }
     }
 
+    public List<Task> findTask(String input) {
+        List<Task> newTaskList = new ArrayList<>();
+        for (Task task : this.taskList) {
+            if (task.getName().toLowerCase().contains(input.toLowerCase())) {
+                newTaskList.add(task);
+            }
+        }
+
+        return newTaskList;
+    }
+
 }
