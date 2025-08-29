@@ -6,7 +6,7 @@ package grimm.parse;
  * The Command enum encapsulates various commands such as "bye", "list", "mark",
  * "unmark", "todo", "deadline", "event", and "delete". Each command is represented
  * by a string value and the enum provides functionality to validate commands and
- * convert input strings into appropriate Command objects.
+ * convert input strings into Command objects.
  * </p>
  */
 public enum Command {
@@ -40,7 +40,7 @@ public enum Command {
     /**
      * Converts a string input into a corresponding Command enum.
      * <p>
-     * This method will attempt to match the input string with one of the predefined
+     * This method matches the input string with one of the predefined
      * commands in the enum. If no match is found, it returns UNKNOWN.
      * </p>
      *
