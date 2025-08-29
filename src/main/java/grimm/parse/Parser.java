@@ -5,8 +5,8 @@ import grimm.exception.GrimmException;
 /**
  * Parses and validates user input commands for the Grimm task management system.
  * <p>
- * The Parser class is responsible for interpreting user commands, validating the task descriptions,
- * and ensuring that the input follows the correct format.
+ * The Parser class interprets user commands, validate the task descriptions,
+ * and ensure that the input follows the correct format.
  * Provides utility methods to process specific task types.
  * </p>
  */
