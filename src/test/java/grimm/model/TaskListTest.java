@@ -33,30 +33,30 @@ class TaskListTest {
 
     @Test
     public void taskList_markTask_taskMarkedAsDone() {
-        Task t = new Task("defeat Grimm");
+        Task t = new Task("Defeat Grimm");
         list.add(t);
 
         Task marked = list.mark(1);
         assertSame(t, marked);
         assertTrue(marked.getMark());
-        assertEquals("[X] defeat Grimm", marked.toString());
+        assertEquals("[X] Defeat Grimm", marked.toString());
     }
 
     @Test
     public void taskList_unmarkTask_taskUnmarked() {
-        Task t = new Task("defeat Grimm", true);
+        Task t = new Task("Defeat Grimm", true);
         list.add(t);
 
         Task unmarked = list.unmark(1);
         assertSame(t, unmarked);
         assertFalse(unmarked.getMark());
-        assertEquals("[ ] defeat Grimm", unmarked.toString());
+        assertEquals("[ ] Defeat Grimm", unmarked.toString());
     }
 
     @Test
     public void taskList_deleteTask_taskRemovedFromList() {
-        Task t1 = new Task("defeat Grimm");
-        Task t2 = new Task("defeat NKG");
+        Task t1 = new Task("Defeat Grimm");
+        Task t2 = new Task("Defeat NKG");
         list.add(t1);
         list.add(t2);
 
