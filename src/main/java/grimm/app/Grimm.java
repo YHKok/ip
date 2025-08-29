@@ -14,6 +14,7 @@ import grimm.ui.Ui;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.DateTimeException;
+import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -146,6 +147,14 @@ public class Grimm {
                     grimm.ui.deleteMsg(task, grimm.taskList);
                 } catch (GrimmException e) {
                     grimm.ui.invalidGrimmMsg(e.getMessage());
+                }
+            }
+            case FIND -> {
+                List<Task> filteredTaskList = grimm.taskList.findTask(desc);
+                if (filteredTaskList.isEmpty()) {
+                    grimm.ui.listEmptyMsg();
+                } else {
+                    grimm.ui.showTasks(filteredTaskList);
                 }
             }
             default -> grimm.ui.unknownCommand();
