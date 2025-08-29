@@ -4,15 +4,15 @@ package grimm.model;
  * Represents a To-Do task.
  * <p>
  * The ToDo class extends the Task class and represents a simple task
- * that can be marked as completed or remain unmarked. It includes a description
- * and has its own string representation.
+ * that can be marked or unmarked.
+ * It has a description and has its own string representation.
  * </p>
  */
 public class ToDo extends Task {
     /**
      * Constructs a ToDo task with a given description.
      * <p>
-     * The task will initially be unmarked.
+     * The task will be unmarked.
      * </p>
      *
      * @param name The description of the ToDo task.
