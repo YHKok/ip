@@ -8,6 +8,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
+
 /**
  * Controller for the main GUI.
  */
@@ -29,11 +30,12 @@ public class MainWindow extends AnchorPane {
     @FXML
     public void initialize() {
         scrollPane.vvalueProperty().bind(dialogContainer.heightProperty());
+        dialogContainer.getChildren().add(DialogBox.getGrimmDialog(Ui.welcome(), grimmImage));
     }
 
     /** Injects the Grimm instance */
-    public void setGrimm(Grimm g) {
-        this.grimm = g;
+    public void setGrimm(Grimm grimm) {
+        this.grimm = grimm;
     }
 
     /**
