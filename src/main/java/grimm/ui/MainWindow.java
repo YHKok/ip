@@ -1,6 +1,7 @@
 package grimm.ui;
 
 import grimm.app.Grimm;
+import grimm.app.Main;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
@@ -51,5 +52,9 @@ public class MainWindow extends AnchorPane {
                 DialogBox.getGrimmDialog(response, grimmImage)
         );
         userInput.clear();
+
+        if (input.equalsIgnoreCase("bye")) {
+            Main.exit();
+        }
     }
 }
