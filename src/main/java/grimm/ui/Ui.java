@@ -73,12 +73,14 @@ public class Ui {
     }
 
     /**
-     * Prints the list of tasks to the user.
+     * Formats and returns the list of tasks as a numbered string.
+     *
      * <p>
-     * If the task list is empty, calls the listEmptyMsg() method to notify the user.
+     * If the provided task list is empty, listEmptyMsg() is returned instead.
      * </p>
      *
-     * @param tasks The list of tasks to be displayed.
+     * @param tasks the list of tasks to display
+     * @return a formatted list of tasks or an empty list message
      */
     public String showTasks(List<Task> tasks) {
         if (tasks.isEmpty()) {
