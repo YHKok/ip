@@ -81,7 +81,7 @@ public class TaskList {
      * @param num The index to validate.
      * @throws GrimmException if the index is invalid (either less than 1 or greater than the list size).
      */
-    public void exceedIndex(int num) throws GrimmException {
+    public void checkExceedIndex(int num) throws GrimmException {
         if (this.taskList.isEmpty()) {
             throw new GrimmException("The stage is empty. Try again.");
         }
