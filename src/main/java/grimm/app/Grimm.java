@@ -9,13 +9,14 @@ import grimm.model.ToDo;
 import grimm.parse.Command;
 import grimm.parse.Parser;
 import grimm.storage.Storage;
+import grimm.ui.DialogBox;
 import grimm.ui.Ui;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.DateTimeException;
 import java.util.List;
-import java.util.Scanner;
+
 
 /**
  * The main class that runs the Grimm application.
@@ -33,10 +34,121 @@ public class Grimm {
     /**
      * Constructs a Grimm object and initializes the task list, UI, and parser.
      */
-    private Grimm() {
+    public Grimm() {
         this.taskList = new TaskList();
         this.ui = new Ui();
         this.parser = new Parser();
+        try {
+            Storage storage = new Storage("./data/grimm.txt");
+            for (Task t : storage.load()) {
+                this.taskList.add(t);
+            }
+        } catch (FileNotFoundException e) {
+//            this.ui.invalidFile();
+        } catch (GrimmException e) {
+//            this.ui.invalidGrimmMsg(e.getMessage());
+        }
+    }
+
+    /**
+     * Generates a response for the user's chat message.
+     */
+    public String getResponse(String input) {
+        Parser parser = this.parser.parse(input);
+        Command command = parser.getCommand();
+        String desc = parser.getDesc();
+
+        switch (command) {
+            case BYE -> {
+                try {
+                    Storage storage = new Storage("./data/grimm.txt");
+                    storage.save(this.taskList.getTaskList());
+                } catch (IOException e) {
+                    return this.ui.invalidFile();
+                }
+
+                return this.ui.bye();
+            }
+            case LIST -> {
+                return this.ui.showTasks(this.taskList.getTaskList());
+            }
+            case MARK -> {
+                try {
+                    int num = parser.parseInt();
+                    this.taskList.exceedIndex(num);
+                    Task task = this.taskList.mark(num);
+                    return this.ui.markMsg(task);
+                } catch (GrimmException e) {
+                    return this.ui.invalidGrimmMsg(e.getMessage());
+                }
+            }
+            case UNMARK -> {
+                try {
+                    int num = parser.parseInt();
+                    this.taskList.exceedIndex(num);
+                    Task task = this.taskList.unmark(num);
+                    return this.ui.unmarkMsg(task);
+                } catch (GrimmException e) {
+                    return this.ui.invalidGrimmMsg(e.getMessage());
+                }
+            }
+            case TODO -> {
+                try {
+                    parser.validName();
+                    ToDo todo = new ToDo(desc);
+                    this.taskList.add(todo);
+                    return this.ui.addMsg(todo, this.taskList.getSize());
+                } catch (GrimmException e) {
+                    return this.ui.invalidGrimmMsg(e.getMessage());
+                }
+            }
+
+            case DEADLINE -> {
+                try {
+                    String[] descParts = parser.parseDeadline();
+                    Deadline deadline = new Deadline(descParts[0], descParts[1]);
+                    this.taskList.add(deadline);
+                    return this.ui.addMsg(deadline, this.taskList.getSize());
+                } catch (GrimmException e) {
+                    return this.ui.invalidDeadline();
+                } catch (DateTimeException e) {
+                    return this.ui.invalidDate();
+                }
+            }
+            case EVENT -> {
+                try {
+                    String[] descParts = parser.parseEvent();
+                    Event event = new Event(descParts[0], descParts[1], descParts[2]);
+                    this.taskList.add(event);
+                    return this.ui.addMsg(event, this.taskList.getSize());
+                } catch (GrimmException e) {
+                    return this.ui.invalidEvent();
+                } catch (DateTimeException e) {
+                    return this.ui.invalidDatetime();
+                }
+            }
+            case DELETE -> {
+                try {
+                    int num = parser.parseInt();
+                    this.taskList.exceedIndex(num);
+                    Task task = this.taskList.delete(num);
+                    return this.ui.deleteMsg(task, this.taskList);
+                } catch (GrimmException e) {
+                    return this.ui.invalidGrimmMsg(e.getMessage());
+                }
+            }
+            case FIND -> {
+                List<Task> filteredTaskList = this.taskList.findTask(desc);
+                if (filteredTaskList.isEmpty()) {
+                    return this.ui.listEmptyMsg();
+                } else {
+                    return this.ui.showTasks(filteredTaskList);
+                }
+            }
+            default -> {
+                return this.ui.unknownCommand();
+            }
+        }
     }
 
     /**
@@ -50,115 +162,10 @@ public class Grimm {
      * @param args The command-line arguments passed to the application.
      */
     public static void main(String[] args) {
-        Grimm grimm = new Grimm();
-        try {
-            Storage storage = new Storage("./data/grimm.txt");
-            for (Task t : storage.load()) {
-                grimm.taskList.add(t);
-            }
-        } catch (FileNotFoundException e) {
-            grimm.ui.invalidFile();
-        } catch (GrimmException e) {
-            grimm.ui.invalidGrimmMsg(e.getMessage());
-        }
+        System.out.println("Silksong is finally here");
+    }
 
-        grimm.ui.welcome();
-        Scanner scan = new Scanner(System.in);
-        while (true) {
-            String input = scan.nextLine();
-            Parser parser = grimm.parser.parse(input);
-            Command command = parser.getCommand();
-            String desc = parser.getDesc();
-
-            switch (command) {
-            case BYE -> {
-                try {
-                    Storage storage = new Storage("./data/grimm.txt");
-                    storage.save(grimm.taskList.getTaskList());
-                } catch (IOException e) {
-                    grimm.ui.invalidFile();
-                } finally {
-                    grimm.ui.bye();
-                }
-
-                return;
-            }
-            case LIST -> grimm.ui.showTasks(grimm.taskList.getTaskList());
-            case MARK -> {
-                try {
-                    int num = parser.parseInt();
-                    grimm.taskList.exceedIndex(num);
-                    Task task = grimm.taskList.mark(num);
-                    grimm.ui.markMsg(task);
-                } catch (GrimmException e) {
-                    grimm.ui.invalidGrimmMsg(e.getMessage());
-                }
-            }
-            case UNMARK -> {
-                try {
-                    int num = parser.parseInt();
-                    grimm.taskList.exceedIndex(num);
-                    Task task = grimm.taskList.unmark(num);
-                    grimm.ui.unmarkMsg(task);
-                } catch (GrimmException e) {
-                    grimm.ui.invalidGrimmMsg(e.getMessage());
-                }
-            }
-            case TODO -> {
-                try {
-                    parser.validName();
-                    ToDo todo = new ToDo(desc);
-                    grimm.taskList.add(todo);
-                    grimm.ui.addMsg(todo, grimm.taskList.getSize());
-                } catch (GrimmException e) {
-                    grimm.ui.invalidGrimmMsg(e.getMessage());
-                }
-            }
-
-            case DEADLINE -> {
-                try {
-                    String[] descParts = parser.parseDeadline();
-                    Deadline deadline = new Deadline(descParts[0], descParts[1]);
-                    grimm.taskList.add(deadline);
-                    grimm.ui.addMsg(deadline, grimm.taskList.getSize());
-                } catch (GrimmException e) {
-                    grimm.ui.invalidDeadline();
-                } catch (DateTimeException e) {
-                    grimm.ui.invalidDate();
-                }
-            }
-            case EVENT -> {
-                try {
-                    String[] descParts = parser.parseEvent();
-                    Event event = new Event(descParts[0], descParts[1], descParts[2]);
-                    grimm.taskList.add(event);
-                    grimm.ui.addMsg(event, grimm.taskList.getSize());
-                } catch (GrimmException e) {
-                    grimm.ui.invalidEvent();
-                } catch (DateTimeException e) {
-                    grimm.ui.invalidDatetime();
-                }
-            }
-            case DELETE -> {
-                try {
-                    int num = parser.parseInt();
-                    grimm.taskList.exceedIndex(num);
-                    Task task = grimm.taskList.delete(num);
-                    grimm.ui.deleteMsg(task, grimm.taskList);
-                } catch (GrimmException e) {
-                    grimm.ui.invalidGrimmMsg(e.getMessage());
-                }
-            }
-            case FIND -> {
-                List<Task> filteredTaskList = grimm.taskList.findTask(desc);
-                if (filteredTaskList.isEmpty()) {
-                    grimm.ui.listEmptyMsg();
-                } else {
-                    grimm.ui.showTasks(filteredTaskList);
-                }
-            }
-            default -> grimm.ui.unknownCommand();
-            }
-        }
+    public String getWelcomeMsg() {
+        return this.ui.welcome();
     }
 }
