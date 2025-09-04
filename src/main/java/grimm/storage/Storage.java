@@ -102,29 +102,27 @@ public class Storage {
         }
 
         switch (command) {
-        case "T" -> {
-            return new ToDo(desc, isMarked);
-        }
-        case "D" -> {
-            if (dueBy.isEmpty()) {
-                throw new GrimmException("The Troupe senses a corrupted file.Try again with: D,<0/1>,<desc>,<date>");
+            case "T" -> {
+                return new ToDo(desc, isMarked);
             }
-            return new Deadline(desc, isMarked, dueBy);
-        }
-        case "E" -> {
-            if (!dueBy.contains("-")) {
-                throw new GrimmException("The Troupe senses a corrupted file.Try again with: E,<0/1>,<desc>,<date>");
+            case "D" -> {
+                if (dueBy.isEmpty()) {
+                    throw new GrimmException("The Troupe senses a corrupted file.Try again with: D,<0/1>,<desc>,<date>");
+                }
+                return new Deadline(desc, isMarked, dueBy);
             }
-            String[] dueByParts = dueBy.split("-");
-            if (dueByParts.length < 2) {
-                throw new GrimmException("The Troupe senses a corrupted file.Try again with: E,<0/1>,<desc>,<datetime-datetime>");
+            case "E" -> {
+                if (!dueBy.contains("-")) {
+                    throw new GrimmException("The Troupe senses a corrupted file.Try again with: E,<0/1>,<desc>,<date>");
+                }
+                String[] dueByParts = dueBy.split("-");
+                if (dueByParts.length < 2) {
+                    throw new GrimmException("The Troupe senses a corrupted file.Try again with: E,<0/1>,<desc>,<datetime-datetime>");
+                }
+                return new Event(desc, isMarked, dueByParts[0], dueByParts[1]);
             }
-            return new Event(desc, isMarked, dueByParts[0], dueByParts[1]);
+            default -> throw new GrimmException("The Troupe senses an unknown command.....");
         }
-        default -> {
-            throw new GrimmException("The Troupe senses an unknown command.....");
-        }
-    }
     }
 
     /**
