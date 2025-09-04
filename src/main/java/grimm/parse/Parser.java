@@ -73,7 +73,7 @@ public class Parser {
      *
      * @throws GrimmException if the task description is empty.
      */
-    public void validName() throws GrimmException {
+    public void checkValidName() throws GrimmException {
         if (this.desc.isEmpty()) {
             throw new GrimmException("A task with no name? Try again with a description.");
         }
@@ -88,7 +88,7 @@ public class Parser {
      * @param input The input array containing the description and due date.
      * @throws GrimmException if the format is invalid.
      */
-    public void validDeadlineFormat(String[] input) throws GrimmException {
+    public void checkValidDeadlineFormat(String[] input) throws GrimmException {
         if (input.length < 2) {
             throw new GrimmException("A deadline with no end? Try again with: deadline <desc> /by <time>.");
         }
@@ -103,7 +103,7 @@ public class Parser {
      * @param input The input array containing the event details and timings.
      * @throws GrimmException if the format is invalid.
      */
-    public void validEventFormat(String[] input) throws GrimmException {
+    public void checkValidEventFormat(String[] input) throws GrimmException {
         if (input.length < 2) {
             throw new GrimmException("An event with no start and end? Try again with: event <desc> /from <time> /to <time>.");
         }
@@ -130,9 +130,9 @@ public class Parser {
      * @throws GrimmException if the format is invalid.
      */
     public String[] parseDeadline() throws GrimmException {
-        this.validName();
+        this.checkValidName();
         String[] descParts = this.desc.split(" /by ", 2);
-        this.validDeadlineFormat(descParts);
+        this.checkValidDeadlineFormat(descParts);
         return new String[] {descParts[0], descParts[1]};
     }
 
@@ -143,11 +143,11 @@ public class Parser {
      * @throws GrimmException if the format is invalid.
      */
     public String[] parseEvent() throws GrimmException {
-        this.validName();
+        this.checkValidName();
         String[] descParts = this.desc.split(" /from ", 2);
-        this.validEventFormat(descParts);
+        this.checkValidEventFormat(descParts);
         String[] duration = descParts[1].split(" /to ", 2);
-        this.validEventFormat(duration);
+        this.checkValidEventFormat(duration);
         return new String[] {descParts[0], duration[0], duration[1]};
     }
 }
