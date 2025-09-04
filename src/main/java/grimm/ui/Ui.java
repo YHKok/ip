@@ -16,60 +16,60 @@ import java.util.List;
  */
 public class Ui {
 
-    public void welcome() {
-        System.out.println("Hello, I'm grimm.app.Grimm\nWhat can I do for you?\n");
+    public static String welcome() {
+        return "Hello, I'm Grimm\nWhat can I do for you?\n";
     }
 
-    public void bye() {
-        System.out.println("Bye. Hope to see you again soon!");
+    public String bye() {
+        return "Bye. Hope to see you again soon!";
     }
 
-    public void listEmptyMsg() {
-        System.err.println("No acts for this stage yet. The troupe awaits your command.");
+    public String listEmptyMsg() {
+        return "No acts for this stage yet. The troupe awaits your command.";
     }
 
-    public void addMsg(Task task, int size) {
-        System.out.println("Got it. I've added this task:\n" + task + "\nNow you have " + size + " tasks in the list.");
+    public String addMsg(Task task, int size) {
+        return "Got it. I've added this task:\n" + task + "\nNow you have " + size + " tasks in the list.";
     }
 
-    public void markMsg(Task task) {
-        System.out.println("Nice! I've marked this task as done: \n" + task);
+    public String markMsg(Task task) {
+        return "Nice! I've marked this task as done: \n" + task;
     }
 
-    public void unmarkMsg(Task task) {
-        System.out.println("OK, I've marked this task as not done yet: \n" + task);
+    public String unmarkMsg(Task task) {
+        return "OK, I've marked this task as not done yet: \n" + task;
     }
 
-    public void deleteMsg(Task task, TaskList taskList) {
-        System.out.println("Noted. I've removed this task:\n" + task + "\nNow you have " + taskList.getSize() + " tasks in the list.");
+    public String deleteMsg(Task task, TaskList taskList) {
+        return "Noted. I've removed this task:\n" + task + "\nNow you have " + taskList.getSize() + " tasks in the list.";
     }
 
-    public void invalidFile() {
-        System.err.println("This is not a file I know. Try again.");
+    public String invalidFile() {
+        return "This is not a file I know. Try again.";
     }
 
-    public void invalidDate() {
-        System.err.println("The Troupe does not understand this date. Try again with: MM/dd/yyyy format");
+    public String invalidDate() {
+        return "The Troupe does not understand this date. Try again with: MM/dd/yyyy format";
     }
 
-    public void invalidDatetime() {
-        System.err.println("The Troupe does not understand this date. Try again with: MM/dd/yyyy HHmm format");
+    public String invalidDatetime() {
+        return "The Troupe does not understand this date. Try again with: MM/dd/yyyy HHmm format";
     }
 
-    public void unknownCommand() {
-        System.err.println("The stage is not prepared for such words, little one. Try a valid command.");
+    public String unknownCommand() {
+        return "The stage is not prepared for such words, little one. Try a valid command.";
     }
 
-    public void invalidDeadline() {
-        System.err.println("A deadline with no end? Try again with: deadline <desc> /by <time>.");
+    public String invalidDeadline() {
+        return "A deadline with no end? Try again with: deadline <desc> /by <time>.";
     }
 
-    public void invalidEvent() {
-        System.err.println("An event cannot begin and end without a time. Try again with: event <desc> /from <start> /to <end>.");
+    public String invalidEvent() {
+        return "An event cannot begin and end without a time. Try again with: event <desc> /from <start> /to <end>.";
     }
 
-    public void invalidGrimmMsg(String msg) {
-        System.err.println(msg);
+    public String invalidGrimmMsg(String msg) {
+        return msg;
     }
 
     /**
@@ -80,16 +80,18 @@ public class Ui {
      *
      * @param tasks The list of tasks to be displayed.
      */
-    public void showTasks(List<Task> tasks) {
+    public String showTasks(List<Task> tasks) {
         if (tasks.isEmpty()) {
-            this.listEmptyMsg();
-            return;
+            return this.listEmptyMsg();
         }
 
+        StringBuilder sb = new StringBuilder();
         int i = 1;
         for (Task task : tasks) {
-            System.out.println(i + ". " + task);
+            sb.append(i).append(". ").append(task).append("\n");
             i++;
         }
+
+        return sb.toString();
     }
 }
