@@ -9,7 +9,6 @@ import grimm.model.ToDo;
 import grimm.parse.Command;
 import grimm.parse.Parser;
 import grimm.storage.Storage;
-import grimm.ui.DialogBox;
 import grimm.ui.Ui;
 
 import java.io.FileNotFoundException;
@@ -32,7 +31,7 @@ public class Grimm {
     private final Parser parser;
 
     /**
-     * Constructs a Grimm object and initializes the task list, UI, and parser.
+     * Constructs a Grimm object and initializes the taskList, UI, parser and storage.
      */
     public Grimm() {
         this.taskList = new TaskList();
@@ -44,14 +43,28 @@ public class Grimm {
                 this.taskList.add(t);
             }
         } catch (FileNotFoundException e) {
-//            this.ui.invalidFile();
+            this.ui.invalidFile();
         } catch (GrimmException e) {
-//            this.ui.invalidGrimmMsg(e.getMessage());
+            this.ui.invalidGrimmMsg(e.getMessage());
         }
     }
 
     /**
      * Generates a response for the user's chat message.
+     *
+     * <p>
+     * The input is parsed into a Command and using
+     * the Parser. The appropriate action is executed and a user-facing message
+     * is returned via Ui.
+     * </p>
+     *
+     * <p>
+     * This method captures and converts internal exceptions into UI
+     * messages; it does not show exceptions to the caller.
+     * </p>
+     *
+     * @param input the raw user input string
+     * @return a formatted response string to display to the user
      */
     public String getResponse(String input) {
         Parser parser = this.parser.parse(input);
@@ -75,7 +88,7 @@ public class Grimm {
             case MARK -> {
                 try {
                     int num = parser.parseInt();
-                    this.taskList.exceedIndex(num);
+                    this.taskList.checkExceedIndex(num);
                     Task task = this.taskList.mark(num);
                     return this.ui.markMsg(task);
                 } catch (GrimmException e) {
@@ -85,7 +98,7 @@ public class Grimm {
             case UNMARK -> {
                 try {
                     int num = parser.parseInt();
-                    this.taskList.exceedIndex(num);
+                    this.taskList.checkExceedIndex(num);
                     Task task = this.taskList.unmark(num);
                     return this.ui.unmarkMsg(task);
                 } catch (GrimmException e) {
@@ -94,7 +107,7 @@ public class Grimm {
             }
             case TODO -> {
                 try {
-                    parser.validName();
+                    parser.checkValidName();
                     ToDo todo = new ToDo(desc);
                     this.taskList.add(todo);
                     return this.ui.addMsg(todo, this.taskList.getSize());
@@ -130,7 +143,7 @@ public class Grimm {
             case DELETE -> {
                 try {
                     int num = parser.parseInt();
-                    this.taskList.exceedIndex(num);
+                    this.taskList.checkExceedIndex(num);
                     Task task = this.taskList.delete(num);
                     return this.ui.deleteMsg(task, this.taskList);
                 } catch (GrimmException e) {
@@ -165,7 +178,4 @@ public class Grimm {
         System.out.println("Silksong is finally here");
     }
 
-    public String getWelcomeMsg() {
-        return this.ui.welcome();
-    }
 }
