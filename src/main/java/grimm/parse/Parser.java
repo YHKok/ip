@@ -29,9 +29,6 @@ public class Parser {
      */
     public Parser(Command command, String desc) {
         this.command = command;
-        if (desc == null) {
-            this.desc = "";
-        }
         this.desc = desc;
     }
 
@@ -68,45 +65,24 @@ public class Parser {
         return new Parser(Command.convert(command), desc);
     }
 
-    /**
-     * Validates that the task description is not empty.
-     *
-     * @throws GrimmException if the task description is empty.
-     */
     public void checkValidName() throws GrimmException {
         if (this.desc.isEmpty()) {
             throw new GrimmException("A task with no name? Try again with a description.");
         }
     }
 
-    /**
-     * Validates the format for a deadline command.
-     * <p>
-     * Ensures that the description includes both the task and the due date.
-     * </p>
-     *
-     * @param input The input array containing the description and due date.
-     * @throws GrimmException if the format is invalid.
-     */
-    public void checkValidDeadlineFormat(String[] input) throws GrimmException {
-        if (input.length < 2) {
-            throw new GrimmException("A deadline with no end? Try again with: deadline <desc> /by <time>.");
+    private void checkValidFormat(String[] input, int length, String msg) throws GrimmException {
+        if (input == null || input.length < length) {
+            throw new GrimmException(msg);
         }
     }
 
-    /**
-     * Validates the format for an event command.
-     * <p>
-     * Ensures that the description includes both the event details and the start and end times.
-     * </p>
-     *
-     * @param input The input array containing the event details and timings.
-     * @throws GrimmException if the format is invalid.
-     */
+    public void checkValidDeadlineFormat(String[] input) throws GrimmException {
+        checkValidFormat(input, 2, "A deadline with no end? Try again with: deadline <desc> /by <time>.");
+    }
+
     public void checkValidEventFormat(String[] input) throws GrimmException {
-        if (input.length < 2) {
-            throw new GrimmException("An event with no start and end? Try again with: event <desc> /from <time> /to <time>.");
-        }
+        checkValidFormat(input, 2, "An event with no start and end? Try again with: event <desc> /from <time> /to <time>.");
     }
 
     /**
