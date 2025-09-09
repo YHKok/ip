@@ -219,11 +219,11 @@ public class Grimm {
                             if (eventPartsFrom.length < 2) {
                                 return this.ui.invalidEvent();
                             }
-                            String[] eventPartsTo = eventPartsFrom[1].split(" /to ", 2);
-                            if (eventPartsTo.length < 2) {
+                            String[] eventParts = eventPartsFrom[1].split(" /to ", 2);
+                            if (eventParts.length < 2) {
                                 return this.ui.invalidEvent();
                             }
-                            task = new Event(eventPartsFrom[0], eventPartsTo[0], eventPartsTo[1]);
+                            task = new Event(eventPartsFrom[0], eventParts[0], eventParts[1]);
                         }
                         default -> {
                             return this.ui.unknownCommand();
