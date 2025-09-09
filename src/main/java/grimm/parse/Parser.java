@@ -86,6 +86,10 @@ public class Parser {
         checkValidFormat(input, 2, "An event with no start and end? Try again with: event <desc> /from <time> /to <time>.");
     }
 
+    public void checkValidUpdateFormat(String[] input) throws GrimmException {
+        checkValidFormat(input, 3, "The troupe cannot update this. Try again with: update <num> <task type> <new desc>.");
+    }
+
     /**
      * Attempts to parse the description as an integer.
      *
@@ -134,9 +138,7 @@ public class Parser {
     public String[] parseUpdate() throws GrimmException {
         this.checkValidName();
         String[] descParts = this.desc.split(" ", 3);
-        if (descParts.length < 3) {
-            throw new GrimmException("The troupe cannot update this. Try again with: update <num> <task type> <new desc>.");
-        }
+        this.checkValidUpdateFormat(descParts);
 
         boolean isValidType = descParts[1].equals("todo") || descParts[1].equals("deadline") || descParts[1].equals("event");
         if (!isValidType) {
