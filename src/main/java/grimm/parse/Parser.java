@@ -1,5 +1,6 @@
 package grimm.parse;
 
+import grimm.app.Grimm;
 import grimm.exception.GrimmException;
 
 /**
@@ -128,5 +129,20 @@ public class Parser {
         this.checkValidEventFormat(duration);
         assert duration.length == 2 : "Event time should be split into start and end";
         return new String[] {descParts[0], duration[0], duration[1]};
+    }
+
+    public String[] parseUpdate() throws GrimmException {
+        this.checkValidName();
+        String[] descParts = this.desc.split(" ", 3);
+        if (descParts.length < 3) {
+            throw new GrimmException("The troupe cannot update this. Try again with: update <num> <task type> <new desc>.");
+        }
+
+        boolean isValidType = descParts[1].equals("todo") || descParts[1].equals("deadline") || descParts[1].equals("event");
+        if (!isValidType) {
+            throw new GrimmException("The Flame...has not heard of such tasks.");
+        }
+
+        return descParts;
     }
 }
