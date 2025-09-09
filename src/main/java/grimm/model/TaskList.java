@@ -27,22 +27,10 @@ public class TaskList {
         return this.taskList;
     }
 
-    /**
-     * Adds a task to the task list.
-     *
-     * @param task The task to be added.
-     */
     public void add(Task task) {
         this.taskList.add(task);
     }
 
-    /**
-     * Marks a task as done based on 1-based index.
-     *
-     * @param num The index of the task to mark.
-     * @return The marked task.
-     * @throws GrimmException if the index is out of bounds.
-     */
     public Task mark(int num) {
         this.task = this.getTask(num);
         assert this.task != null : "Task to mark should exist";
@@ -50,13 +38,6 @@ public class TaskList {
         return this.task;
     }
 
-    /**
-     * Unmarks a task, setting it to the incomplete state, based on 1-based index.
-     *
-     * @param num The index of the task to unmark.
-     * @return The unmarked task.
-     * @throws GrimmException if the index is out of bounds.
-     */
     public Task unmark(int num) {
         this.task = this.getTask(num);
         assert this.task != null : "Task to unmark should exist";
@@ -64,13 +45,6 @@ public class TaskList {
         return this.task;
     }
 
-    /**
-     * Deletes a task based on 1-based index.
-     *
-     * @param num The index of the task to delete.
-     * @return The deleted task.
-     * @throws GrimmException if the index is out of bounds.
-     */
     public Task delete(int num) {
         this.task = this.getTask(num);
         assert this.task != null : "Task to delete should exist";
