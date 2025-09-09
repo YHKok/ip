@@ -19,6 +19,7 @@ public enum Command {
     EVENT("event"),
     DELETE("delete"),
     FIND("find"),
+    UPDATE("update"),
     UNKNOWN("");
     private String command;
 

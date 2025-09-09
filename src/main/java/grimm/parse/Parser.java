@@ -1,5 +1,6 @@
 package grimm.parse;
 
+import grimm.app.Grimm;
 import grimm.exception.GrimmException;
 
 /**
@@ -85,6 +86,10 @@ public class Parser {
         checkValidFormat(input, 2, "An event with no start and end? Try again with: event <desc> /from <time> /to <time>.");
     }
 
+    public void checkValidUpdateFormat(String[] input) throws GrimmException {
+        checkValidFormat(input, 3, "The troupe cannot update this. Try again with: update <num> <task type> <new desc>.");
+    }
+
     /**
      * Attempts to parse the description as an integer.
      *
@@ -128,5 +133,18 @@ public class Parser {
         this.checkValidEventFormat(duration);
         assert duration.length == 2 : "Event time should be split into start and end";
         return new String[] {descParts[0], duration[0], duration[1]};
+    }
+
+    public String[] parseUpdate() throws GrimmException {
+        this.checkValidName();
+        String[] descParts = this.desc.split(" ", 3);
+        this.checkValidUpdateFormat(descParts);
+
+        boolean isValidType = descParts[1].equals("todo") || descParts[1].equals("deadline") || descParts[1].equals("event");
+        if (!isValidType) {
+            throw new GrimmException("The Flame...has not heard of such tasks.");
+        }
+
+        return descParts;
     }
 }

@@ -44,6 +44,10 @@ public class Ui {
         return "Noted. I've removed this task:\n" + task + "\nNow you have " + taskList.getSize() + " tasks in the list.";
     }
 
+    public String updateMsg(Task task) {
+        return "OK, I've updated this task: \n" + task;
+    }
+
     public String invalidFile() {
         return "This is not a file I know. Try again.";
     }
