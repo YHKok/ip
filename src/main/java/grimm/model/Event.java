@@ -65,7 +65,6 @@ public class Event extends Task {
      */
     public String formatDateTime() {
         try {
-
             LocalDateTime start = LocalDateTime.parse(this.startDate, INPUT_FORMAT);
             LocalDateTime end = LocalDateTime.parse(this.endDate, INPUT_FORMAT);
             return start.format(OUTPUT_FORMAT) + " to " + end.format(OUTPUT_FORMAT);
