@@ -194,6 +194,49 @@ public class Grimm {
                     return this.ui.showTasks(filteredTaskList);
                 }
             }
+            case UPDATE -> {
+                try {
+                    String[] updateParts = parser.parseUpdate();
+                    int num = Integer.parseInt(updateParts[0]);
+                    assert num > 0 : "Task index should exist in the list";
+                    this.taskList.checkExceedIndex(num);
+                    String taskType = updateParts[1];
+                    String taskDesc = updateParts[2];
+                    Task task;
+                    switch (taskType) {
+                        case "todo" -> {
+                            task = new ToDo(taskDesc);
+                        }
+                        case "deadline" -> {
+                            String[] deadlineParts = taskDesc.split(" /by ", 2);
+                            if (deadlineParts.length < 2) {
+                                return this.ui.invalidDeadline();
+                            }
+                            task = new Deadline(deadlineParts[0], deadlineParts[1]);
+                        }
+                        case "event" -> {
+                            String[] eventPartsFrom = taskDesc.split(" /from ", 2);
+                            if (eventPartsFrom.length < 2) {
+                                return this.ui.invalidEvent();
+                            }
+                            String[] eventPartsTo = eventPartsFrom[1].split(" /to ", 2);
+                            if (eventPartsTo.length < 2) {
+                                return this.ui.invalidEvent();
+                            }
+                            task = new Event(eventPartsFrom[0], eventPartsTo[0], eventPartsTo[1]);
+                        }
+                        default -> {
+                            return this.ui.unknownCommand();
+                        }
+                    }
+
+                    Task updatedTask = this.taskList.update(num, task);
+                    return this.ui.updateMsg(updatedTask);
+
+                } catch (GrimmException e) {
+                    return this.ui.invalidGrimmMsg(e.getMessage());
+                }
+            }
             default -> {
                 return this.ui.unknownCommand();
             }
