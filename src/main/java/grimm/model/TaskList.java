@@ -45,6 +45,7 @@ public class TaskList {
      */
     public Task mark(int num) {
         this.task = this.getTask(num);
+        assert this.task != null : "Task to mark should exist";
         this.task.mark();
         return this.task;
     }
@@ -58,6 +59,7 @@ public class TaskList {
      */
     public Task unmark(int num) {
         this.task = this.getTask(num);
+        assert this.task != null : "Task to unmark should exist";
         this.task.unmark();
         return this.task;
     }
@@ -71,6 +73,7 @@ public class TaskList {
      */
     public Task delete(int num) {
         this.task = this.getTask(num);
+        assert this.task != null : "Task to delete should exist";
         this.taskList.remove(num - 1);
         return this.task;
     }
