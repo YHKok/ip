@@ -68,7 +68,9 @@ public class Grimm {
      */
     public String getResponse(String input) {
         Parser parser = this.parser.parse(input);
+        assert parser != null : "Parser should not be null";
         Command command = parser.getCommand();
+        assert command != null : "Command should not be null";
         String desc = parser.getDesc();
 
         switch (command) {
@@ -88,6 +90,7 @@ public class Grimm {
             case MARK -> {
                 try {
                     int num = parser.parseInt();
+                    assert num > 0 : "Task index should exist in the list";
                     this.taskList.checkExceedIndex(num);
                     Task task = this.taskList.mark(num);
                     return this.ui.markMsg(task);
@@ -98,6 +101,7 @@ public class Grimm {
             case UNMARK -> {
                 try {
                     int num = parser.parseInt();
+                    assert num > 0 : "Task index should exist in the list";
                     this.taskList.checkExceedIndex(num);
                     Task task = this.taskList.unmark(num);
                     return this.ui.unmarkMsg(task);

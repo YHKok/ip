@@ -133,6 +133,7 @@ public class Parser {
         this.checkValidName();
         String[] descParts = this.desc.split(" /by ", 2);
         this.checkValidDeadlineFormat(descParts);
+        assert descParts.length == 2 : "Deadline should be split into description and due date";
         return new String[] {descParts[0], descParts[1]};
     }
 
@@ -146,8 +147,10 @@ public class Parser {
         this.checkValidName();
         String[] descParts = this.desc.split(" /from ", 2);
         this.checkValidEventFormat(descParts);
+        assert descParts.length == 2 : "Event should be split into desc and time";
         String[] duration = descParts[1].split(" /to ", 2);
         this.checkValidEventFormat(duration);
+        assert duration.length == 2 : "Event time should be split into start and end";
         return new String[] {descParts[0], duration[0], duration[1]};
     }
 }
