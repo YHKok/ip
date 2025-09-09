@@ -52,6 +52,13 @@ public class TaskList {
         return this.task;
     }
 
+    public Task update(int num, Task task) {
+        this.task = this.getTask(num);
+        assert this.task != null : "Task to update should exist";
+        this.taskList.set(num - 1, task);
+        return this.task;
+    }
+
     /**
      * Validates if the provided index is within the valid range of the task list.
      *
