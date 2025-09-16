@@ -16,12 +16,23 @@ import java.util.List;
  */
 public class Ui {
 
+    /**
+     * AiAssisted
+     * Used ChatGPT to help improve the personality of the chatbot
+     */
     public static String welcome() {
-        return "Hello, I'm Grimm\nWhat can I do for you?\n";
+        return "Ahh… the stage is set!\n"
+                + "I am Grimm, master of the Flame and keeper of grand performances.\n"
+                + "Speak, little vessel—what dance of tasks shall we begin?\n";
     }
 
+    /**
+     * AiAssisted
+     * Used ChatGPT to help improve the personality of the chatbot
+     */
     public String bye() {
-        return "Bye. Hope to see you again soon!";
+        return "The curtain falls and the flames dim.\n"
+                + "Until our next performance, child of shadow… farewell!\n";
     }
 
     public String listEmptyMsg() {
