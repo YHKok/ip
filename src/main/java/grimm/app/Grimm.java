@@ -149,9 +149,9 @@ public class Grimm {
                     storage.save(this.taskList.getTaskList());
                 } catch (IOException e) {
                     return this.ui.invalidFile();
+                } finally {
+                    return this.ui.bye();
                 }
-
-                return this.ui.bye();
             }
             case LIST -> {
                 return this.ui.showTasks(this.taskList.getTaskList());
